@@ -1,0 +1,67 @@
+quantile_cauchy <- function(x) {
+  nonmupart <- tan(pi*(x-1/2))
+  return(nonmupart)
+}
+
+thisfunc <- function(replications, my_num){ #replications will be 10000, my_num will be n
+  mylist <- vector("list", length = replications)#initialize list of length replications
+  for (i in 1:replications){
+    my_x <- runif(my_num, 0, 1) #generates my_n Unif(0,1) r.v.s
+    my_b <- 2 + quantile_cauchy(my_x) #Q(U)
+    mylist[[i]] <- my_b #add into list
+  }
+  return(mylist)#list of 10000 vectors, of length n
+}
+quantfunc <- function(my_list){
+  v <- rep(0, bigB)#initialize vector of length B=10000
+  for (i in 1:bigB){
+    v[i] <- quantile(my_list[[i]], 0.5) #gives the median
+  }
+  return(v) #returns 10000 medians
+}
+epsilonfunc <- function(my_list){
+  v <- rep(0, bigB)#initialize vector of length B=10000
+  for (i in 1:bigB){
+    v[i] <- (mean(my_list[[i]]) - 2)
+  }
+  return(v) #10000 items
+}
+bigB <- 10000
+tenreptest <- thisfunc(bigB, 10)
+ten_epsilon <- epsilonfunc(tenreptest)
+ten_quant <- quantfunc(tenreptest)
+hundreptest <- thisfunc(bigB, 100)
+hund_epsilon <- epsilonfunc(hundreptest)
+hund_quant <- quantfunc(hundreptest)
+thoureptest <- thisfunc(bigB, 1000)
+thou_epsilon <- epsilonfunc(thoureptest)
+thou_quant <- quantfunc(thoureptest)
+ten_k_reptest <- thisfunc(bigB, 10000)
+ten_k_epsilon <- epsilonfunc(ten_k_reptest)
+ten_k_quant <- quantfunc(ten_k_reptest)
+
+quantile(ten_epsilon, 0.05)
+quantile(ten_epsilon, 0.5)
+quantile(ten_epsilon, 0.95)
+quantile(hund_epsilon, 0.05)
+quantile(hund_epsilon, 0.5)
+quantile(hund_epsilon, 0.95)
+quantile(thou_epsilon, 0.05)
+quantile(thou_epsilon, 0.5)
+quantile(thou_epsilon, 0.95)
+quantile(ten_k_epsilon, 0.05)
+quantile(ten_k_epsilon, 0.5)
+quantile(ten_k_epsilon, 0.95)
+
+quantile(ten_quant, 0.05)
+quantile(ten_quant, 0.5)
+quantile(ten_quant, 0.95)
+quantile(hund_quant, 0.05)
+quantile(hund_quant, 0.5)
+quantile(hund_quant, 0.95)
+quantile(thou_quant, 0.05)
+quantile(thou_quant, 0.5)
+quantile(thou_quant, 0.95)
+quantile(ten_k_quant, 0.05)
+quantile(ten_k_quant, 0.5)
+quantile(ten_k_quant, 0.95)
