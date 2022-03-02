@@ -1,0 +1,41 @@
+len <- 16
+empty_list <- vector(mode = "list", length = len)
+
+for (theta in 75:90){
+  my_vec <- rep(0, 10000)
+  for (i in 1:10000){
+    my_vec[i]<-runif(1, 0, theta)
+  }
+  empty_list[[theta-74]]<-my_vec
+}
+mean_list<-vector(mode = "list", length = len)
+for (j in 1:16){
+  MoMtheta<-mean(empty_list[[j]], trim=0)
+  mean_list[j]<-MoMtheta * 2
+}
+#Note: mean_list should be called MoMList
+Momlist<-mean_list
+#Or that works too
+#I really don't feel like doing another nested list
+#So I'll make a diff. list for higher and lower CI bounds
+CI95lowers<-vector(mode = "list", length = len)
+CI95uppers<-vector(mode = "list", length = len)
+for(k in 1:16){
+  thetahat<-Momlist[[k]]
+  otherpart <- 1.96 * thetahat / sqrt(30000)
+  lowbound<- thetahat - otherpart
+  upbound<- thetahat+otherpart
+  CI95lowers[k]<-lowbound
+  CI95uppers[k]<-upbound
+}
+d_list <- vector(mode = "list", length = len)
+for(m in 1:16){
+  current_d_vec<-rep(0, 10000)
+  for(n in 1:10000){
+    if (empty_list[[m]][n] > CI95lowers[m] && empty_list[[m]][n] < CI95uppers[m]) {
+      current_d_vec[n]<-1
+    }
+  d_list[[m]]<-current_d_vec  
+  }
+}
+rm(list=ls())
